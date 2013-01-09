@@ -5,6 +5,8 @@
 #include "exkana.h"
 #include "exvar.h"
 
+#define BUFSIZE 65535
+
 char *mfgets();
 extern char *convcode();
 
@@ -14,7 +16,7 @@ char *filename;
 int start;
 {
 	int i,j,k,l,m,n,cc,indent,wflg,flg,bflg=0,nest,esc,quo,eflg=0,pacc,preject;
-	unsigned char buff[1024],wbuff[1024],estr[256],table[1024],tbuff[256],*tmp1,*tmp2;
+	unsigned char buff[BUFSIZE],wbuff[BUFSIZE],estr[256],table[BUFSIZE],tbuff[256],*tmp1,*tmp2;
 	FILE *fp;
 
 	pacc=acc;
@@ -49,7 +51,7 @@ int start;
 			ind=(struct index *)realloc(ind,sizeof(struct index)*(i+100));
 LOOP:
 		ind[i].lnum=n;
-		if (mfgets(buff,1023,fp)==NULL) break;
+		if (mfgets(buff,sizeof(buff)-1,fp)==NULL) break;
 		for (j=bflg=cc=0;j<strlen(buff);j++) {
 			if (buff[j]!=' ' && buff[j]!='\n') cc=1;
 			if (bflg==0) {
