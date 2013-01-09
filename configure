@@ -1,0 +1,71 @@
+#!/bin/sh
+#
+progname=`basename $0`
+termcode=
+configopt=
+
+printUsage () {
+	echo "Usage: $progname {EUC|JIS|SJIS}"
+	exit 1
+}
+
+if [ ! -f ../config.status ]; then
+	echo "../config.status not found."
+	echo "please make orignal Web2c programs before make pTeX."
+	exit 1
+fi
+
+# 引数チェック
+test -z "$*" && printUsage
+case $1 in
+	[Ss][Jj][Ii][Ss]) termcode="SJIS" ;;
+	[Jj][Ii][Ss])  termcode="JIS"  ;;
+	[Ee][Uu][Cc])  termcode="EUC"  ;;
+	*) echo "unknown option $1"; printUsage ;;
+esac
+
+CONFIGSED=config.sed 
+echo "s%@configopt@%$*%g" > $CONFIGSED
+echo "s%@TERMCODE@%$termcode%g" >> $CONFIGSED
+case $termcode in
+  "SJIS") echo "s%@KANJI@%SJIS%g" >> $CONFIGSED ;;
+  "JIS")  echo "s%@KANJI@%JIS%g" >> $CONFIGSED ;;
+  *)      echo "s%@KANJI@%EUC%g" >> $CONFIGSED ;;
+esac
+
+# kpathseaライブラリチェック
+if [ -f ../kpathsea/libkpathsea.la ]; then
+	echo "s%@KFLAGS@%-DKPATHSEA -DKPATHSEA3%" >> $CONFIGSED ;
+	echo "s%@KPATHLINK@%\\\$(kpathsea_link)%" >> $CONFIGSED ;
+	echo "s%@LIBKPATHSEA@%../kpathsea/libkpathsea.la%" >> $CONFIGSED ;
+elif [ -f ../kpathsea/kpathsea.a ]; then
+    echo "s%@KFLAGS@%-DKPATHSEA%" >> $CONFIGSED ;
+	echo "s%@KPATHLINK@%\\\$(kpathsea_link)%" >> $CONFIGSED ;
+	echo "s%@LIBKPATHSEA@%../kpathsea/kpathsea.a%" >> $CONFIGSED ;
+else
+    echo "s%@KFLAGS@%%" >> $CONFIGSED ;
+	echo "s%@KPATHLINK@%%" >> $CONFIGSED ;
+	echo "s%@LIBKPATHSEA@%%" >> $CONFIGSED ;
+fi
+
+if [ -f ../kpathsea/libtool ]; then
+    echo "s%@KLIBTOOL@%../kpathsea/libtool%" >> $CONFIGSED ;
+    echo "s%@LINKMODE@%--mode=link%" >> $CONFIGSED ;
+elif [ -f ../kpathsea/klibtool]; then
+    echo "s%@KLIBTOOL@%../kpathsea/klibtool%" >> $CONFIGSED ;
+    echo "s%@LINKMODE@%link%" >> $CONFIGSED ;
+else
+    echo "s%@KLIBTOOL@%%" >> $CONFIGSED ;
+    echo "s%@LINKMODE@%%" >> $CONFIGSED ;
+fi
+
+# Makefile の作成
+CONFIG_FILES=Makefile
+CONFIG_HEADERS=..
+export CONFIG_FILES CONFIG_HEADERS
+../config.status
+TMPFILE=makefile.tmp
+sed -f $CONFIGSED Makefile > $TMPFILE
+mv -f $TMPFILE Makefile
+
+exit 0

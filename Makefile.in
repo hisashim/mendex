@@ -1,0 +1,36 @@
+# Makefile for mendex
+PROGRAM = mendex
+
+KANJI = @KANJI@
+
+ac_include ../make/paths.mk
+
+CFLAGS = @CFLAGS@ @KFLAGS@ -D$(KANJI)
+PROGLINK = @KPATHLINK@ $(OBJS) @LIBKPATHSEA@
+
+OBJS = main.o convert.o sort.o fread.o fwrite.o styfile.o pageread.o kp.o
+LIBTOOL = @KLIBTOOL@
+
+link_command = $(CC) -o $(PROGRAM) $(LDFLAGS) 
+kpathsea_link = $(LIBTOOL) @LINKMODE@ $(link_command)
+
+$(PROGRAM): $(OBJS) @LIBKPATHSEA@
+	$(PROGLINK)
+
+main.o:main.c var.h kana.h kp.h
+convert.o:convert.c exvar.h exkana.h ktable.h kp.h
+sort.o:sort.c exvar.h exkana.h
+fread.o:fread.c exvar.h exkana.h
+fwrite.o:fwrite.c exvar.h exkana.h
+styfile.o:styfile.c exvar.h kp.h
+pageread.o:pageread.c
+kp.o: kp.c kp.h
+
+install:	$(PROGRAM)
+	install -m 755 $? $(bindir)
+
+clean:
+	rm -f *.o mendex
+
+distclean:
+	rm -f *.o *.core *.idx *.ind *.sty *.ist *.tex *.log *.aux *.dvi *.dic *.ilg $(PROGRAM) Makefile config.sed
