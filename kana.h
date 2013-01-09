@@ -67,6 +67,7 @@ unsigned char AIUEO[]={
 unsigned char *aiueo;
 
 unsigned char ONBIKI[]={0xa1,0xbc,0}; /* ー */
+unsigned char SPACE[]={0xa1,0xa1,0}; /* 全角スペース */
 unsigned char ALPHAEND[]={0xa3,0xfa,0}; /* ｚ */
 unsigned char HIRATOP[]={0xa4,0xa1,0}; /* ぁ */
 unsigned char HIRAEND[]={0xa4,0xf3,0}; /* ん */

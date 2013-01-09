@@ -12,6 +12,7 @@ extern KpathseaSupportInfo kp_dict;
 #endif
 
 extern char *mfgets();
+extern int convputs();
 
 struct dictionary{
 unsigned char dic[2][50];
@@ -73,8 +74,8 @@ char *filename;
 			warn++;
 			goto ENV;
 		}
-		if (verb!=0) fprintf(stderr,"Scanning dictionary file %s....",filename);
-		if (efp!=stderr) fprintf(efp,"Scanning dictionary file %s....",filename);
+		if (verb!=0) fprintf(stderr,"Scanning dictionary file %s.",filename);
+		if (efp!=stderr) fprintf(efp,"Scanning dictionary file %s.",filename);
 
 		for (i=0;;i++) {
 			if (mfgets(buff,4095,fp)==NULL) break;
@@ -83,12 +84,11 @@ char *filename;
 		fclose(fp);
 
 		dictable=(struct dictionary *)malloc(sizeof(struct dictionary)*i);
-		dlines=i;
 
-		dicvalread(filename,dictable,dlines);
+		dlines=dicvalread(filename,dictable,i);
 
-		if (verb!=0) fprintf(stderr,"done.\n");
-		if (efp!=stderr) fprintf(efp,"done.\n");
+		if (verb!=0) fprintf(stderr,"...done.\n");
+		if (efp!=stderr) fprintf(efp,"...done.\n");
 	}
 
 ENV:
@@ -113,8 +113,8 @@ ENV:
 			return ecount;
 		}
 
-		if (verb!=0) fprintf(stderr,"Scanning environment dictionary file %s....",envfile);
-		if (efp!=stderr) fprintf(efp,"Scanning environment dictionary file %s....",envfile);
+		if (verb!=0) fprintf(stderr,"Scanning environment dictionary file %s.",envfile);
+		if (efp!=stderr) fprintf(efp,"Scanning environment dictionary file %s.",envfile);
 
 		for (i=0;;i++) {
 			if (mfgets(buff,255,fp)==NULL) break;
@@ -123,12 +123,11 @@ ENV:
 		fclose(fp);
 
 		envdic=(struct dictionary *)malloc(sizeof(struct dictionary)*i);
-		elines=i;
 
-		dicvalread(envfile,envdic,elines);
+		elines=dicvalread(envfile,envdic,i);
 
-		if (verb!=0) fprintf(stderr,"done.\n");
-		if (efp!=stderr) fprintf(efp,"done.\n");
+		if (verb!=0) fprintf(stderr,"...done.\n");
+		if (efp!=stderr) fprintf(efp,"...done.\n");
 	}
 }
 
@@ -147,7 +146,7 @@ int line;
 	fp=fopen(filename,"r");
 	for (i=0;i<line;i++) {
 READING:
-		mfgets(buff,255,fp);
+		if (mfgets(buff,255,fp)==NULL) break;
 		if ((buff[0]=='\n')||(buff[0]=='\0')) {
 			i--;
 			continue;
@@ -157,11 +156,19 @@ READING:
 			dicval[i].dic[0][k]=buff[j];
 		}
 		dicval[i].dic[0][k]='\0';
+		if (strlen(dicval[i].dic[0])==0) {
+			i--;
+			continue;
+		}
 		for (;((buff[j]==' ')||(buff[j]=='\t'));j++);
 		for (k=0;((buff[j]!='\n')&&(buff[j]!=' ')&&(buff[j]!='\t'));j++,k++) {
 			dicval[i].dic[1][k]=buff[j];
 		}
 		dicval[i].dic[1][k]='\0';
+		if (strlen(dicval[i].dic[1])==0) {
+			i--;
+			continue;
+		}
 
 		convert(dicval[i].dic[1],buff);
 		strcpy(dicval[i].dic[1],buff);
@@ -169,7 +176,8 @@ READING:
 
 	fclose(fp);
 
-	qsort(dicval,line,sizeof(struct dictionary),dcomp);
+	qsort(dicval,i,sizeof(struct dictionary),dcomp);
+	return(i);
 }
 
 int dcomp(buff1,buff2)
@@ -194,6 +202,7 @@ unsigned char *buff1,*buff2;
 {
 	int i=0,j=0,k,l,cc;
 	unsigned char str[2];
+	char errbuff[4096];
 
 	while(1) {
 		if (buff1[i]=='\0') {
@@ -225,8 +234,9 @@ unsigned char *buff1,*buff2;
 						goto MATCH1;
 					}
 				}
-				fprintf(efp,"\nError: %s is bad katakana ",&buff1[i]);
-				if (efp!=stderr) fprintf(stderr,"\nError: %s is bad katakana ",&buff1[i]);
+				sprintf(errbuff,"\nError: %s is bad katakana ",&buff1[i]);
+				convputs(errbuff,efp);
+				if (efp!=stderr) convputs(errbuff,stderr);
 				return -1;
 MATCH1:
 				i+=2;
@@ -241,8 +251,9 @@ MATCH1:
 						goto MATCH2;
 					}
 				}
-				fprintf(efp,"\nError: %s is bad hiragana ",&buff1[i]);
-				if (efp!=stderr) fprintf(stderr,"\nError: %s is bad hiragana ",&buff1[i]);
+				sprintf(errbuff,"\nError: %s is bad hiragana ",&buff1[i]);
+				convputs(errbuff,efp);
+				if (efp!=stderr) convputs(errbuff,stderr);
 				return -1;
 MATCH2:
 				i+=2;
@@ -261,8 +272,9 @@ MATCH2:
 						}
 					}
 				}
-				fprintf(efp,"\nError: %s is Illegal line ",buff1);
-				if (efp!=stderr) fprintf(stderr,"\nError: %s is Illegal line ",buff1);
+				sprintf(errbuff,"\nError: %s is Illegal line ",buff1);
+				convputs(errbuff,efp);
+				if (efp!=stderr) convputs(errbuff,stderr);
 				return -1;
 MATCH3:
 				i+=2;
@@ -270,7 +282,7 @@ MATCH3:
 			}
 
 			else if (buff1[i]>=0x80) {
-				if (strncmp(&buff1[i],ALPHAEND,2)<0) {
+				if ((strncmp(&buff1[i],SPACE,2)>=0)&&(strncmp(&buff1[i],ALPHAEND,2)<=0)) {
 /*   alpha-numeric,symbols   */
 					for (k=0;k<strlen(symboltable);k+=2) {
 						if (strncmp(&buff1[i],&symboltable[k],2)==0) {
@@ -315,8 +327,9 @@ MATCH3:
 							buff2[j++]=buff1[i++];
 						}
 						else {
-							fprintf(efp,"\nError: %s is no entry in dictionary file ",&buff1[i]);
-							if (efp!=stderr) fprintf(stderr,"\nError: %s is no entry in dictionary file ",&buff1[i]);
+							sprintf(errbuff,"\nError: %s is no entry in dictionary file ",&buff1[i]);
+							convputs(errbuff,efp);
+							if (efp!=stderr) convputs(errbuff,stderr);
 							return -1;
 						}
 					}

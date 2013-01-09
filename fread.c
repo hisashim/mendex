@@ -113,6 +113,7 @@ LOOP:
 							fprintf(efp,"\nError: Extra `%c\' in %s, line %d.",level,filename,ind[i].lnum);
 							if (efp!=stderr) fprintf(stderr,"\nError: Extra `%c\' in %s, line %d.",level,filename,ind[i].lnum);
 							eflg++;
+							reject++;
 							n++;
 							goto LOOP;
 						}
@@ -135,6 +136,7 @@ LOOP:
 							fprintf(efp,"\nError: Extra `%c\' in %s, line %d.",actual,filename,ind[i].lnum);
 							if (efp!=stderr) fprintf(stderr,"\nError: Extra `%c\' in %s, line %d.",actual,filename,ind[i].lnum);
 							eflg++;
+							reject++;
 							n++;
 							goto LOOP;
 						}
@@ -158,6 +160,7 @@ LOOP:
 								fprintf(efp,"\nBad encap string in %s, line %d.",filename,ind[i].lnum);
 								if (efp!=stderr) fprintf(stderr,"\nBad encap string in %s, line %d.",filename,ind[i].lnum);
 								eflg++;
+								reject++;
 								n++;
 								goto LOOP;
 							}
@@ -234,6 +237,7 @@ LOOP:
 					fprintf(efp,"in %s, line %d.",filename,ind[i].lnum);
 					if (efp!=stderr) fprintf(stderr,"in %s, line %d.",filename,ind[i].lnum);
 					eflg++;
+					reject++;
 					n++;
 					goto LOOP;
 				}
@@ -250,6 +254,7 @@ LOOP:
 					fprintf(efp,"in %s, line %d.",filename,ind[i].lnum);
 					if (efp!=stderr) fprintf(stderr,"in %s, line %d.",filename,ind[i].lnum);
 					eflg++;
+					reject++;
 					n++;
 					goto LOOP;
 				}
@@ -600,14 +605,16 @@ FILE *fp;
 			else break;
 		}
 		else if (cc=='\n') {
-			buf[i++]=cc;;
+			buf[i++]=cc;
 			break;
 		}
 		else if (cc>=0x80) {
-			cc=cc*256+fgetc(fp);
+			cc2=fgetc(fp);
 			if (kanji==Sjis) {
-				cc=SJIStoJIS(cc);
-				cc+=0x8080;
+				cc=SJIStoJIS((cc<<8)+cc2)+0x8080;
+			}
+			else {
+				cc=(cc<<8)+cc2;
 			}
 			buf[i++]=(cc>>8)&0xff;
 			buf[i]=cc&0xff;
