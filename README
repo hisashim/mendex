@@ -1,4 +1,4 @@
-<索引整形ツール mendex ver.2.6b>
+<索引整形ツール mendex ver.2.6c>
                                                      株式会社アスキー
                                                      www-ptex@ascii.co.jp
 
@@ -42,7 +42,7 @@
  対応している検索ライブラリは kpathsea-2.6, 3.3, 3.4, 3.5 です。
 
  1. このディレクトリを tetex-src の texk ディレクトリの下に展開します。
-    tetex-3.0の場合は tetex-src-3.0/texk/mendexk2.6b ディレクトリになります。
+    tetex-3.0の場合は tetex-src-3.0/texk/mendexk2.6c ディレクトリになります。
 
  2. configure を実行します。その際、デフォルトの漢字コードを指定します。
     対応している漢字コードは JIS, JIS, EUC です。

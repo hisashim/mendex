@@ -4,6 +4,7 @@ PROGRAM = mendex
 KANJI = @KANJI@
 
 ac_include ../make/paths.mk
+ac_include ../make/common.mk
 
 CFLAGS = @CFLAGS@ @KFLAGS@ -D$(KANJI)
 PROGLINK = @KPATHLINK@ $(OBJS) @LIBKPATHSEA@

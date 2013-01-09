@@ -225,7 +225,7 @@ char *lbuff;
 				|| ind[num].p[j].enc[0]==range_close)
 				ind[num].p[j].enc++;
 			if (strlen(ind[num].p[j].enc)>0) {
-				sprintf(buff,"%s%s%s",encap_prefix,ind[num].p[j].enc,encap_infix);
+				sprintf(buff,"%s%s%s",encap_prefix,convcode(ind[num].p[j].enc),encap_infix);
 			}
 			if (strlen(suffix_3p)>0 && (pnumconv(ind[num].p[cc].page,ind[num].p[cc].attr[0])-pnumconv(ind[num].p[j].page,ind[num].p[j].attr[0]))==2) {
 				sprintf(&buff[strlen(buff)],"%s%s",ind[num].p[j].page,suffix_3p);
@@ -266,7 +266,7 @@ char *lbuff;
 				ind[num].p[j].enc++;
 			}
 			if (strlen(ind[num].p[j].enc)>0) {
-				sprintf(&tmpbuff[strlen(tmpbuff)],"%s%s%s%s%s%s",encap_prefix,ind[num].p[j].enc,encap_infix,ind[num].p[j].page,encap_suffix,delim_n);
+				sprintf(&tmpbuff[strlen(tmpbuff)],"%s%s%s%s%s%s",encap_prefix,convcode(ind[num].p[j].enc),encap_infix,ind[num].p[j].page,encap_suffix,delim_n);
 				linecheck(lbuff,tmpbuff);
 			}
 			else {
@@ -283,7 +283,7 @@ char *lbuff;
 
 	if (ind[num].p[j].enc[0]==range_open) {
 		sprintf(errbuff,"Warning: Unmatched range opening operator \'(\',");
-		for (k=0;k<ind[num].words;k++) sprintf(&errbuff[strlen(errbuff)],"%s.",ind[num].idx[k]);
+		for (k=0;k<ind[num].words;k++) sprintf(&errbuff[strlen(errbuff)],"%s.",convcode(ind[num].idx[k]));
 		fprintf(efp,"%s\n",errbuff);
 		if (efp!=stderr) fprintf(stderr,"%s\n",errbuff);
 		warn++;
@@ -298,7 +298,7 @@ char *lbuff;
 		ind[num].p[j].enc++;
 	}
 	if (strlen(ind[num].p[j].enc)>0) {
-		sprintf(&tmpbuff[strlen(tmpbuff)],"%s%s%s%s%s",encap_prefix,ind[num].p[j].enc,encap_infix,ind[num].p[j].page,encap_suffix);
+		sprintf(&tmpbuff[strlen(tmpbuff)],"%s%s%s%s%s",encap_prefix,convcode(ind[num].p[j].enc),encap_infix,ind[num].p[j].page,encap_suffix);
 	}
 	else {
 		sprintf(&tmpbuff[strlen(tmpbuff)],"%s",ind[num].p[j].page);
@@ -348,7 +348,7 @@ char *lbuff;
 						ind.p[j].enc++;
 					}
 					if (strlen(ind.p[j].enc)>0) {
-						sprintf(tmpbuff,"%s%s%s%s%s%s",encap_prefix,ind.p[j].enc,encap_infix,ind.p[j].page,encap_suffix,delim_n);
+						sprintf(tmpbuff,"%s%s%s%s%s%s",encap_prefix,convcode(ind.p[j].enc),encap_infix,ind.p[j].page,encap_suffix,delim_n);
 						linecheck(lbuff,tmpbuff);
 					}
 				}

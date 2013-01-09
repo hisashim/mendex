@@ -348,8 +348,6 @@ LOOP:
 							fprintf(stderr,"\nWarning: Sort key \"%s\" is different from previous key \"%s\" for same index \"%s\" in %s, line %d.",convcode(tmp1),convcode(tmp2),convcode(ind[i].idx[m]),filename,ind[i].lnum);
 						if (efp!=stderr)
 							fprintf(efp,"\nWarning: Sort key \"%s\" is different from previous key \"%s\" for same index \"%s\" in %s, line %d.",convcode(tmp1),convcode(tmp2),convcode(ind[i].idx[m]),filename,ind[i].lnum);
-						acc--;
-						reject++;
 						warn++;
 						flg=0;
 						break;

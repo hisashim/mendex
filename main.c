@@ -22,7 +22,7 @@ char *styfile,*idxfile[256],indfile[256],*dicfile,logfile[256];
 KpathseaSupportInfo kp_ist,kp_dict;
 #endif
 
-#define VERSION "version 2.6b [24-Mar-2005]"
+#define VERSION "version 2.6c [16-May-2005]"
 
 main(argc,argv)
 int argc;
