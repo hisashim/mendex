@@ -154,7 +154,7 @@ int pagenum;
 				break;
 
 			case 2:
-				if (strcmp(ind[i-1].dic[0],ind[i].dic[0])!=0) {
+				if (strcmp(ind[i-1].idx[0],ind[i].idx[0])!=0 || strcmp(ind[i-1].dic[0],ind[i].dic[0])!=0) {
 					sprintf(&lbuff[strlen(lbuff)],"%s%s%s",item_0,convcode(ind[i].idx[0]),item_x1);
 				}
 				else {
@@ -170,14 +170,14 @@ int pagenum;
 				break;
 
 			case 3:
-				if (strcmp(ind[i-1].dic[0],ind[i].dic[0])) {
+				if (strcmp(ind[i-1].idx[0],ind[i].idx[0])!=0 || strcmp(ind[i-1].dic[0],ind[i].dic[0])!=0) {
 					sprintf(&lbuff[strlen(lbuff)],"%s%s",item_0,convcode(ind[i].idx[0]));
 					sprintf(&lbuff[strlen(lbuff)],"%s%s%s",item_x1,convcode(ind[i].idx[1]),item_x2);
 				}
 				else if (ind[i-1].words==1) {
 					sprintf(&lbuff[strlen(lbuff)],"%s%s%s",item_01,convcode(ind[i].idx[1]),item_x2);
 				}
-				else if (strcmp(ind[i-1].dic[1],ind[i].dic[1])) {
+				else if (strcmp(ind[i-1].idx[1],ind[i].idx[1])!=0 || strcmp(ind[i-1].dic[1],ind[i].dic[1])!=0) {
 					if (ind[i-1].words==2) sprintf(&lbuff[strlen(lbuff)],"%s%s%s",item_1,convcode(ind[i].idx[1]),item_12);
 					else sprintf(&lbuff[strlen(lbuff)],"%s%s%s",item_1,convcode(ind[i].idx[1]),item_x2);
 				}
