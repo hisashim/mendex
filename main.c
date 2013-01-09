@@ -22,7 +22,7 @@ char *styfile,*idxfile[256],indfile[256],*dicfile,logfile[256];
 KpathseaSupportInfo kp_ist,kp_dict;
 #endif
 
-#define VERSION "version 2.6c [16-May-2005]"
+#define VERSION "version 2.6d [5-Jan-2006]"
 
 main(argc,argv)
 int argc;
@@ -160,7 +160,7 @@ char **argv;
 
 			default:
 				fprintf(stderr,"mendex - Japanese index processor, %s.\n",VERSION);
-				fprintf(stderr," Copyright 1995-2005 ASCII Corp.(www-ptex@ascii.co.jp)\n");
+				fprintf(stderr," Copyright 1995-2006 ASCII Corp.(www-ptex@ascii.co.jp)\n");
 				fprintf(stderr,"usage:\n");
 				fprintf(stderr,"%% mendex [-ilqrcg] [-s sty] [-d dic] [-o ind] [-t log] [-p no] [idx0 idx1 ...]\n");
 				fprintf(stderr,"options:\n");

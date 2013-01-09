@@ -11,7 +11,7 @@ printUsage () {
 
 if [ ! -f ../config.status ]; then
 	echo "../config.status not found."
-	echo "please make orignal Web2c programs before make pTeX."
+	echo "please make orignal Web2c programs before make mendex."
 	exit 1
 fi
 

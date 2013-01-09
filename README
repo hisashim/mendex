@@ -1,4 +1,4 @@
-<索引整形ツール mendex ver.2.6c>
+<索引整形ツール mendex ver.2.6d>
                                                      株式会社アスキー
                                                      www-ptex@ascii.co.jp
 
@@ -42,10 +42,11 @@
  対応している検索ライブラリは kpathsea-2.6, 3.3, 3.4, 3.5 です。
 
  1. このディレクトリを tetex-src の texk ディレクトリの下に展開します。
-    tetex-3.0の場合は tetex-src-3.0/texk/mendexk2.6c ディレクトリになります。
+    tetex-3.0 の場合は tetex-src-3.0/texk/mendexk2.6d ディレクトリになります。
+    tetex-src は全体をあらかじめ make しておいてください。
 
  2. configure を実行します。その際、デフォルトの漢字コードを指定します。
-    対応している漢字コードは JIS, JIS, EUC です。
+    対応している漢字コードは JIS, SJIS, EUC です。
     例: EUCで使用する場合
       ./configure EUC
 
@@ -61,7 +62,7 @@
   ・INDEXDICTIONARY   辞書があるディレクトリ
   ・INDEXDEFAULTDICTIONARY   常に参照する辞書ファイル
 
- これらは、ディレクトリ名を ':' (DOS は ';') で区切って並べます(TEXINPUTS
+ これらは、ディレクトリ名を ':' (Windows では ';') で区切って並べます(TEXINPUTS
 などと同じ)。TEXINPUTS と同様、"//" は再帰的な検索を意味します。
 
  これらの変数がどこにも設定されていなければコンパイル時に main.c 冒頭の

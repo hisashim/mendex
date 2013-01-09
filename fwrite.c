@@ -228,17 +228,17 @@ char *lbuff;
 				sprintf(buff,"%s%s%s",encap_prefix,convcode(ind[num].p[j].enc),encap_infix);
 			}
 			if (strlen(suffix_3p)>0 && (pnumconv(ind[num].p[cc].page,ind[num].p[cc].attr[0])-pnumconv(ind[num].p[j].page,ind[num].p[j].attr[0]))==2) {
-				sprintf(&buff[strlen(buff)],"%s%s",ind[num].p[j].page,suffix_3p);
+				sprintf(&buff[strlen(buff)],"%s%s",convcode(ind[num].p[j].page),suffix_3p);
 			}
 			else if (strlen(suffix_mp)>0 && (pnumconv(ind[num].p[cc].page,ind[num].p[cc].attr[0])-pnumconv(ind[num].p[j].page,ind[num].p[j].attr[0]))>=2) {
-				sprintf(&buff[strlen(buff)],"%s%s",ind[num].p[j].page,suffix_mp);
+				sprintf(&buff[strlen(buff)],"%s%s",convcode(ind[num].p[j].page),suffix_mp);
 			}
 			else if (strlen(suffix_2p)>0 && (pnumconv(ind[num].p[cc].page,ind[num].p[cc].attr[0])-pnumconv(ind[num].p[j].page,ind[num].p[j].attr[0]))==1) {
-				sprintf(&buff[strlen(buff)],"%s%s",ind[num].p[j].page,suffix_2p);
+				sprintf(&buff[strlen(buff)],"%s%s",convcode(ind[num].p[j].page),suffix_2p);
 			}
 			else {
-				sprintf(&buff[strlen(buff)],"%s%s",ind[num].p[j].page,delim_r);
-				sprintf(&buff[strlen(buff)],"%s",ind[num].p[cc].page);
+				sprintf(&buff[strlen(buff)],"%s%s",convcode(ind[num].p[j].page),delim_r);
+				sprintf(&buff[strlen(buff)],"%s",convcode(ind[num].p[cc].page));
 			}
 			sprintf(&tmpbuff[strlen(tmpbuff)],"%s",buff);
 			buff[0]='\0';
@@ -258,7 +258,7 @@ char *lbuff;
 		else if (strlen(ind[num].p[j].enc)>0) {
 /* normal encap */
 			if (ind[num].p[j].enc[0]==range_close) {
-				sprintf(errbuff,"Warning: Unmatched range opening operator \')\',");
+				sprintf(errbuff,"Warning: Unmatched range closing operator \'%c\',",range_close);
 				for (i=0;i<ind[num].words;i++) sprintf(&errbuff[strlen(errbuff)],"%s.",convcode(ind[num].idx[i]));
 				fprintf(efp,"%s\n",errbuff);
 				if (efp!=stderr) fprintf(stderr,"%s\n",errbuff);
@@ -266,23 +266,24 @@ char *lbuff;
 				ind[num].p[j].enc++;
 			}
 			if (strlen(ind[num].p[j].enc)>0) {
-				sprintf(&tmpbuff[strlen(tmpbuff)],"%s%s%s%s%s%s",encap_prefix,convcode(ind[num].p[j].enc),encap_infix,ind[num].p[j].page,encap_suffix,delim_n);
+				sprintf(&tmpbuff[strlen(tmpbuff)],"%s%s%s",encap_prefix,convcode(ind[num].p[j].enc),encap_infix);
+				sprintf(&tmpbuff[strlen(tmpbuff)],"%s%s%s",convcode(ind[num].p[j].page),encap_suffix,delim_n);
 				linecheck(lbuff,tmpbuff);
 			}
 			else {
-				sprintf(&tmpbuff[strlen(tmpbuff)],"%s%s",ind[num].p[j].page,delim_n);
+				sprintf(&tmpbuff[strlen(tmpbuff)],"%s%s",convcode(ind[num].p[j].page),delim_n);
 				linecheck(lbuff,tmpbuff);
 			}
 		}
 		else {
 /* no encap */
-			sprintf(&tmpbuff[strlen(tmpbuff)],"%s%s",ind[num].p[j].page,delim_n);
+			sprintf(&tmpbuff[strlen(tmpbuff)],"%s%s",convcode(ind[num].p[j].page),delim_n);
 			linecheck(lbuff,tmpbuff);
 		}
 	}
 
 	if (ind[num].p[j].enc[0]==range_open) {
-		sprintf(errbuff,"Warning: Unmatched range opening operator \'(\',");
+		sprintf(errbuff,"Warning: Unmatched range opening operator \'%c\',",range_open);
 		for (k=0;k<ind[num].words;k++) sprintf(&errbuff[strlen(errbuff)],"%s.",convcode(ind[num].idx[k]));
 		fprintf(efp,"%s\n",errbuff);
 		if (efp!=stderr) fprintf(stderr,"%s\n",errbuff);
@@ -290,7 +291,7 @@ char *lbuff;
 		ind[num].p[j].enc++;
 	}
 	else if (ind[num].p[j].enc[0]==range_close) {
-		sprintf(errbuff,"Warning: Unmatched range opening operator \')\',");
+		sprintf(errbuff,"Warning: Unmatched range closing operator \'%c\',",range_close);
 		for (k=0;k<ind[num].words;k++) sprintf(&errbuff[strlen(errbuff)],"%s.",convcode(ind[num].idx[k]));
 		fprintf(efp,"%s\n",errbuff);
 		if (efp!=stderr) fprintf(stderr,"%s\n",errbuff);
@@ -298,10 +299,11 @@ char *lbuff;
 		ind[num].p[j].enc++;
 	}
 	if (strlen(ind[num].p[j].enc)>0) {
-		sprintf(&tmpbuff[strlen(tmpbuff)],"%s%s%s%s%s",encap_prefix,convcode(ind[num].p[j].enc),encap_infix,ind[num].p[j].page,encap_suffix);
+		sprintf(&tmpbuff[strlen(tmpbuff)],"%s%s%s",encap_prefix,convcode(ind[num].p[j].enc),encap_infix);
+		sprintf(&tmpbuff[strlen(tmpbuff)],"%s%s",convcode(ind[num].p[j].page),encap_suffix);
 	}
 	else {
-		sprintf(&tmpbuff[strlen(tmpbuff)],"%s",ind[num].p[j].page);
+		sprintf(&tmpbuff[strlen(tmpbuff)],"%s",convcode(ind[num].p[j].page));
 	}
 	linecheck(lbuff,tmpbuff);
 
@@ -321,7 +323,7 @@ char *lbuff;
 
 	for (i=count;i<ind.num+1;i++) {
 		if (ind.p[i].enc[0]==range_close) {
-			sprintf(errbuff,"Warning: Unmatched range opening operator \')\',");
+			sprintf(errbuff,"Warning: Unmatched range closing operator \'%c\',",range_close);
 			sprintf(&errbuff[strlen(errbuff)],"%s.",convcode(ind.idx[0]));
 			fprintf(efp,"%s\n",errbuff);
 			if (efp!=stderr) fprintf(stderr,"%s\n",errbuff);
@@ -340,7 +342,7 @@ char *lbuff;
 						break;
 					}
 					else if (j!=i && ind.p[j].enc[0]==range_open) {
-						sprintf(errbuff,"Warning: Unmatched range opening operator \'(\',");
+						sprintf(errbuff,"Warning: Unmatched range opening operator \'%c\',",range_open);
 						for (k=0;k<ind.words;k++) sprintf(&errbuff[strlen(errbuff)],"%s.",convcode(ind.idx[k]));
 						fprintf(efp,"%s\n",errbuff);
 						if (efp!=stderr) fprintf(stderr,"%s\n",errbuff);
@@ -348,13 +350,14 @@ char *lbuff;
 						ind.p[j].enc++;
 					}
 					if (strlen(ind.p[j].enc)>0) {
-						sprintf(tmpbuff,"%s%s%s%s%s%s",encap_prefix,convcode(ind.p[j].enc),encap_infix,ind.p[j].page,encap_suffix,delim_n);
+						sprintf(tmpbuff,"%s%s%s",encap_prefix,convcode(ind.p[j].enc),encap_infix);
+						sprintf(tmpbuff,"%s%s%s",convcode(ind.p[j].page),encap_suffix,delim_n);
 						linecheck(lbuff,tmpbuff);
 					}
 				}
 			}
 			if (j==ind.num+1) {
-					sprintf(errbuff,"Warning: Unmatched range opening operator \'(\',");
+					sprintf(errbuff,"Warning: Unmatched range opening operator \'%c\',",range_open);
 					for (k=0;k<ind.words;k++) sprintf(&errbuff[strlen(errbuff)],"%s.",convcode(ind.idx[k]));
 					fprintf(efp,"%s\n",errbuff);
 					if (efp!=stderr) fprintf(stderr,"%s\n",errbuff);

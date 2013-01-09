@@ -28,10 +28,10 @@ pageread.o:pageread.c
 kp.o: kp.c kp.h
 
 install:	$(PROGRAM)
-	install -m 755 $? $(bindir)
+	$(INSTALL_LIBTOOL_PROG) $? $(bindir)
 
 clean:
-	rm -f *.o mendex
+	$(RM) *.o mendex
 
 distclean:
-	rm -f *.o *.core *.idx *.ind *.sty *.ist *.tex *.log *.aux *.dvi *.dic *.ilg $(PROGRAM) Makefile config.sed
+	$(RM) *.o *.core *.idx *.ind *.sty *.ist *.tex *.log *.aux *.dvi *.dic *.ilg $(PROGRAM) Makefile config.sed

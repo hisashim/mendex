@@ -544,6 +544,11 @@ struct page *p;
 		}
 		else {
 ATTRLOOP:
+			if (!((p->page[i]>='0' && p->page[i]<='9') || (p->page[i]>='A' && p->page[i]<='Z') || (p->page[i]>='a' && p->page[i]<='z'))) {
+				p->attr[cc]= -1;
+				if (cc<2) p->attr[++cc]= -1;
+				return;
+			}
 			switch(page_precedence[pattr[cc]]) {
 			case 'r':
 				if (strchr("ivxlcdm",p->page[i])==NULL) {
