@@ -351,7 +351,7 @@ char *lbuff;
 					}
 					if (strlen(ind.p[j].enc)>0) {
 						sprintf(tmpbuff,"%s%s%s",encap_prefix,convcode(ind.p[j].enc),encap_infix);
-						sprintf(tmpbuff,"%s%s%s",convcode(ind.p[j].page),encap_suffix,delim_n);
+						sprintf(&tmpbuff[strlen(tmpbuff)],"%s%s%s",convcode(ind.p[j].page),encap_suffix,delim_n);
 						linecheck(lbuff,tmpbuff);
 					}
 				}
